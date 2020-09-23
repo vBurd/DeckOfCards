@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+    id "com.awbriggs.cucumber-jvm" version "0.1.1"
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    systemProperty "cucumber.options", System.getProperty("cucumber.options")
+}
+
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation 'io.cucumber:cucumber-java:6.7.0'
+    testImplementation 'io.cucumber:cucumber-junit:6.7.0'
+    testCompile group: 'io.rest-assured', name: 'rest-assured', version: '3.0.0'
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.2.4'
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    compile group: 'org.json', name: 'json', version: '20190722'
+//    compile group: 'net.masterthought', name: 'cucumber-reporting', version: '5.3.1'
+}

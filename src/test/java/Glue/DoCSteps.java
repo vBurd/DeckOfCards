@@ -36,12 +36,11 @@ public class DoCSteps extends DoCAbstractTest {
     public void shuffleTheCardWithDeck_countDeck_count(String deck_count) {
         logger.info("Shuffle the card with deck_count value : " + deck_count);
         context.setDeckCount(deck_count);
-        // add regex for char and symbol
-        if (deck_count.matches("[a-zA-Z]+")) {
+        if (deck_count.matches("[^\\d+$]+")) {
             sendGetRequest(properties.getProperty("shuffle.endpoint") + deck_count, 500);
             context.setServerErrorFlag(true);
             context.setSuccessFlag(false);
-        } else if (!deck_count.matches("[a-zA-Z]+")) {
+        } else if (!deck_count.matches("[^\\d+$]+")) {
             sendGetRequest(properties.getProperty("shuffle.endpoint") + deck_count, 200);
             logger.info("Shuffle response is : " + response.prettyPrint());
             context.setSuccessFlag(response.getBoolean("success"));
@@ -82,7 +81,7 @@ public class DoCSteps extends DoCAbstractTest {
         if (context.getDeck_id().equals("new") && count > 52 || context.getDeck_id().matches("1") && count > 52) {
             Assert.assertTrue(response.getString("error").contains("Not enough cards"));
             context.setExpectedRemaining(0);
-        } else if (!context.getDeck_id().matches("[a-zA-Z]+")) {
+        } else if (!context.getDeck_id().matches("[^\\d+$]+")) {
             context.setRemainingCards(response.getInt("remaining"));
             context.setExpectedRemaining((Integer.parseInt(context.getDeckCount()) * 52) - context.getCardsCount());
             logger.info(context.getExpectedRemaining().toString());
@@ -148,8 +147,8 @@ public class DoCSteps extends DoCAbstractTest {
                 + cards, 200);
         logger.info("Pile creation response : " + response.prettyPrint());
 
-        // need do set remaining cards using list pile endpoint instead of this
-        context.setRemainingCards(cards.split(",").length);
+        context.setRemainingCards(new JSONObject(response.prettyPrint())
+                .getJSONObject("piles").getJSONObject("test").getInt("remaining"));
     }
 
     @Then("Draw five specific cards from a bottom of the pile using deck_id")

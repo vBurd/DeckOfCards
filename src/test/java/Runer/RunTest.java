@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         features = {"src/test/resources/"},
         plugin = {"html:build/cucumber-html-report.html"},
+        tags = ("@deckOfCards"),
         glue = {"Glue"})
 
 public class RunTest {
